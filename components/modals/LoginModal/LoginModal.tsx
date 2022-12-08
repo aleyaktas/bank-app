@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { useRouter } from "next/router";
+
 import styleFn from "./LoginModal.styles";
 
 import {
@@ -14,6 +15,8 @@ import {
   Box,
   Modal,
 } from "@mui/material";
+import { handleLogin } from "../../../pages/api";
+import { Context } from "../../../pages/_app";
 
 const schema = object({
   username: string().required("Name is required"),
@@ -23,27 +26,30 @@ const schema = object({
 });
 
 type LoginModalProps = {
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isOpen: boolean;
+  modal: string;
   handleClose: () => void;
 };
 
 type FormValues = InferType<typeof schema>;
-const LoginModal = ({ setIsOpen, isOpen, handleClose }: LoginModalProps) => {
+const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
+  const { setUser } = useContext(Context);
   const { errors } = formState;
+
   const router = useRouter();
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  const onSubmit = async (data: FormValues) => {
+    const userData = await handleLogin(data);
+    setUser({ token: userData });
     handleClose();
+    router.push("/dashboard");
   };
   const styles = styleFn();
   return (
     <Modal
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-      open={isOpen}
+      open={modal === "login"}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"

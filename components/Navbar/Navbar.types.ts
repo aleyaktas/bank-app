@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
 
-export type LoginStyleProps = () => {
+export type NavbarStyleProps = () => {
   appBar: CSSProperties | undefined;
 };

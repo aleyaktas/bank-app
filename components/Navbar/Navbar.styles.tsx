@@ -2,7 +2,7 @@ import { NavbarStyleProps } from "./Navbar.types";
 
 const styleFn: NavbarStyleProps = () => ({
   appBar: {
-    backgroundColor: "#2b2f3a",
+    backgroundColor: "#2A9D8F ",
   },
 });
 

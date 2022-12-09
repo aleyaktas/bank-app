@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-}
+  publicRuntimeConfig: {
+    backendUrl: "http://localhost:80/",
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

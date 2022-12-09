@@ -1,41 +1,80 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styleFn from "./Navbar.styles";
-import LoginModal from "../modals/LoginModal/LoginModal";
-import { Box, AppBar, Toolbar, Typography, Button } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Grid } from "@mui/material";
 import { useRouter } from "next/router";
 import { Context } from "../../pages/_app";
+import { handleLogout } from "../../pages/api";
 
 const Navbar = () => {
   const styles = styleFn();
   const router = useRouter();
-  const { setModal } = useContext(Context);
+  const { setModal, user, setUser } = useContext(Context);
 
   const login = () => {
     setModal("login");
   };
   const logout = () => {
-    console.log("logout");
+    setUser("");
+    handleLogout();
     router.push("/");
   };
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar sx={styles.appBar} position="static">
-          <Toolbar>
+      <AppBar sx={styles.appBar} position="static">
+        <Grid container sx={{ width: "inherit" }}>
+          <Toolbar sx={{ width: "inherit" }}>
             <Typography
+              fontStyle="italic"
               variant="h6"
               component="div"
-              sx={{ flexGrow: 1, fontSize: "2rem" }}
+              sx={{ mr: 2, fontSize: "1.8rem" }}
             >
-              BankApp
+              BANKAPP
             </Typography>
-
-            <Button sx={{ fontSize: "1.6rem" }} onClick={login} color="inherit">
-              Login
-            </Button>
+            {user ? (
+              <>
+                <Grid container justifyContent="start" alignItems="center">
+                  <Button color="inherit" sx={{ fontSize: "1.4rem" }}>
+                    Hesaplama
+                  </Button>
+                  <Button color="inherit" sx={{ fontSize: "1.4rem" }}>
+                    Faiz
+                  </Button>
+                </Grid>
+                <Button
+                  onClick={logout}
+                  variant="contained"
+                  sx={{
+                    ml: "auto",
+                    fontSize: "1.4rem",
+                    backgroundColor: "#264653",
+                    ":hover": {
+                      backgroundColor: "#264653",
+                    },
+                  }}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={login}
+                sx={{
+                  ml: "auto",
+                  fontSize: "1.4rem",
+                  backgroundColor: "#264653",
+                  ":hover": {
+                    backgroundColor: "#264653",
+                  },
+                }}
+                variant="contained"
+              >
+                Login
+              </Button>
+            )}
           </Toolbar>
-        </AppBar>
-      </Box>
+        </Grid>
+      </AppBar>
     </>
   );
 };

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { useRouter } from "next/router";
 
-import styleFn from "./LoginModal.styles";
+import styleFn from "./AddBank.styles";
 
 import {
   FormControl,
@@ -15,42 +15,38 @@ import {
   Box,
   Modal,
 } from "@mui/material";
-import { handleLogin } from "../../../pages/api";
+
 import { Context } from "../../../pages/_app";
+import { addBank } from "../../../pages/api";
 
 const schema = object({
-  username: string().required("Name is required"),
-  password: string()
-    .required("Password is required")
-    .min(6, "Password must be at least 6 characters"),
+  name: string().required("Name is required"),
 });
 
-type LoginModalProps = {
-  modal: string;
+type AddBankProps = {
   handleClose: () => void;
 };
 
 type FormValues = InferType<typeof schema>;
-const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
+const AddBankModal = ({ handleClose }: AddBankProps) => {
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
-  const { setUser } = useContext(Context);
+  const { setUser, modal, setBanks, banks } = useContext(Context);
   const { errors } = formState;
 
   const router = useRouter();
   const onSubmit = async (data: FormValues) => {
-    const userData = await handleLogin(data);
-    console.log(userData);
-    setUser(userData);
-    router.push("/dashboard");
+    const bankData = addBank(data);
+    setBanks([...banks, bankData]);
+    console.log("submit");
     handleClose();
   };
   const styles = styleFn();
   return (
     <Modal
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-      open={modal === "login"}
+      open={modal === "addBank"}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -76,31 +72,26 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
                 direction="column"
                 justifyContent="space-evenly"
                 alignItems="center"
-                height="25rem"
+                height="16rem"
               >
                 <Box sx={styles.box}>
-                  <Typography marginBottom="2rem" fontSize="3rem" color="black">
-                    Login
+                  <Typography
+                    marginBottom="2rem"
+                    fontSize="2.4rem"
+                    color="black"
+                  >
+                    BANK NAME
                   </Typography>
                   <TextField
                     sx={styles.textField}
                     id="filled-basic"
-                    label="Username"
+                    label="Bank Name"
                     variant="filled"
                     fullWidth
                     InputLabelProps={{ style: { fontSize: "1.4rem" } }}
-                    {...register("username")}
+                    {...register("name")}
                   />
-                  <TextField
-                    sx={{ ...styles.textField, marginBottom: "2rem" }}
-                    id="filled-basic"
-                    label="Password"
-                    variant="filled"
-                    type="password"
-                    fullWidth
-                    InputLabelProps={{ style: { fontSize: "1.4rem" } }}
-                    {...register("password")}
-                  />
+
                   <Button
                     fullWidth
                     variant="contained"
@@ -108,7 +99,7 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
                     onClick={handleSubmit(onSubmit)}
                     sx={styles.button}
                   >
-                    Login
+                    Add
                   </Button>
                 </Box>
               </Grid>
@@ -120,4 +111,4 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
   );
 };
 
-export default LoginModal;
+export default AddBankModal;

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { InterestProps } from "../../pages/dashboard";
+import { InterestProps } from "../../pages/dashboard/banks";
 import { Context } from "../../pages/_app";
 import instance, { serverSideConfig } from "../../utils/axios";
 import BankCardDetail from "../BankCardDetail/BankCardDetail";
@@ -13,12 +13,13 @@ const BankCardDetailList = ({ bankId }: BankCardDetailListProps) => {
 
   return (
     <>
-      {banks.map((bank) => {
+      {banks?.map((bank) => {
         if (bank?.id === bankId) {
-          return bank.interests.map((interest: InterestProps) => {
+          return bank?.interests?.map((interest: InterestProps) => {
             return (
               <BankCardDetail
                 disabled
+                interestId={interest.id}
                 bankId={interest.bank_id}
                 type={{
                   id: interest.credit_type,

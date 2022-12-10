@@ -37,8 +37,12 @@ const Navbar = () => {
                   <Button color="inherit" sx={{ fontSize: "1.4rem" }}>
                     Hesaplama
                   </Button>
-                  <Button color="inherit" sx={{ fontSize: "1.4rem" }}>
-                    Faiz
+                  <Button
+                    color="inherit"
+                    sx={{ fontSize: "1.4rem" }}
+                    onClick={() => router.push("/dashboard/banks")}
+                  >
+                    Banka Ekle
                   </Button>
                 </Grid>
                 <Button

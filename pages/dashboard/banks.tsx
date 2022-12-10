@@ -19,13 +19,14 @@ import {
 import AddBankModal from "../../components/modals/AddBankModal/AddBank";
 import setAuthToken from "../../utils/setAuthToken";
 import instance, { serverSideConfig } from "../../utils/axios";
-import { Context } from "../../pages/_app";
+import { Context } from "../_app";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Cookies from "js-cookie";
 import AddIcon from "@mui/icons-material/Add";
 import { Box } from "@mui/system";
 import BankCard from "../../components/BankCardDetail/BankCardDetail";
-import BankCardDetailList from "../../components/BankCardDetailList/BankCardDetailList";
+import BankCardDetailList from "../../components/BankCardList/BankCardDetailList";
+import { deleteBank } from "../api";
 
 interface DashboardProps {
   allBanks: any[];
@@ -60,10 +61,9 @@ export interface BankProps {
   bank_name: string;
   interests: InterestProps[];
 }
-
 export const getServerSideProps = async (context: any) => {
   const res = await instance.get("/api/banks", serverSideConfig(context));
-  console.log(res.data);
+  console.log(res?.data);
   return {
     props: {
       allBanks: res.data.data,
@@ -92,6 +92,12 @@ export default function Dashboard({ allBanks }: DashboardProps) {
     label: "",
     value: 0,
   });
+
+  const onClickDeleteBank = async (e: any, id: number) => {
+    e.preventDefault();
+    const res = await deleteBank({ id });
+    banks && setBanks(banks.filter((bank) => bank.id !== id));
+  };
 
   const router = useRouter();
 
@@ -128,7 +134,7 @@ export default function Dashboard({ allBanks }: DashboardProps) {
           direction="column"
           marginTop="2rem"
         >
-          {allBanks.map((bank: BankProps) => {
+          {banks?.map((bank: BankProps) => {
             return (
               <Accordion
                 sx={{
@@ -153,7 +159,7 @@ export default function Dashboard({ allBanks }: DashboardProps) {
                     className="showDeleteBtn"
                     variant="contained"
                     color="error"
-                    onClick={() => console.log("sil")}
+                    onClick={(e) => onClickDeleteBank(e, bank.id)}
                   >
                     Sil
                   </Button>

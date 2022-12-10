@@ -37,8 +37,9 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
 
   const router = useRouter();
   const onSubmit = async (data: FormValues) => {
-    const bankData = addBank(data);
-    setBanks([...banks, bankData]);
+    const bankData = await addBank(data);
+    banks?.push(bankData);
+    banks && setBanks(banks);
     console.log("submit");
     handleClose();
   };
@@ -99,7 +100,7 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
                     onClick={handleSubmit(onSubmit)}
                     sx={styles.button}
                   >
-                    Add
+                    Ekle
                   </Button>
                 </Box>
               </Grid>

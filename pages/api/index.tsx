@@ -12,6 +12,11 @@ interface BankProps {
   name: string;
 }
 
+interface Id {
+  id: number;
+  bank_id?: number;
+}
+
 const config: AxiosRequestConfig = {
   headers: {
     "Content-Type": "application/json",
@@ -52,6 +57,42 @@ export const addInterest = async (data: any) => {
   console.log(data);
   try {
     const res = await instance.post("/api/interests", data, config);
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteBank = async ({ id }: Id) => {
+  try {
+    const res = await instance.delete("/api/banks", {
+      data: { id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: Cookies.get("token")
+          ? `Bearer ${Cookies.get("token")}`
+          : "",
+      },
+    });
+
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deleteInterest = async ({ id, bank_id }: Id) => {
+  try {
+    const res = await instance.delete("/api/interests", {
+      data: { id, bank_id },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: Cookies.get("token")
+          ? `Bearer ${Cookies.get("token")}`
+          : "",
+      },
+    });
+
     return res.data.data;
   } catch (error) {
     console.error(error);

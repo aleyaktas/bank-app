@@ -16,7 +16,7 @@ interface ContextProps {
   setUser: (user: string) => void;
   modal: string;
   setModal: (modal: string) => void;
-  banks: any[];
+  banks: any[] | null;
   setBanks: (banks: any[]) => void;
 }
 

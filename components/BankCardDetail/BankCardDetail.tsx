@@ -12,8 +12,12 @@ import {
 import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
-import { addInterest } from "../../pages/api";
-import { CreditProps, OpenCardProps, TypeProps } from "../../pages/dashboard";
+import { addInterest, deleteInterest } from "../../pages/api";
+import {
+  CreditProps,
+  OpenCardProps,
+  TypeProps,
+} from "../../pages/dashboard/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
 
@@ -24,6 +28,7 @@ interface BankCardProps {
   setCredit?: React.Dispatch<React.SetStateAction<CreditProps>>;
   bankId: number;
   interest?: number;
+  interestId?: number;
   openCard?: OpenCardProps;
   setOpenCard?: React.Dispatch<React.SetStateAction<OpenCardProps>>;
   disabled?: boolean;
@@ -42,6 +47,7 @@ const BankCardDetail = ({
   setCredit,
   bankId,
   interest,
+  interestId,
   openCard,
   setOpenCard,
   disabled,
@@ -50,7 +56,7 @@ const BankCardDetail = ({
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
-  console.log(interest);
+
   const { setModal, banks, setBanks } = useContext(Context);
   return (
     <Grid container direction="row" mb={2}>
@@ -163,13 +169,13 @@ const BankCardDetail = ({
 
             const res = await addInterest(newData);
             console.log("res ", res);
-            const newBanks = banks.map((bank) => {
+            const newBanks = banks?.map((bank) => {
               if (bank.id === bankId) {
-                bank.interests.push(newData);
+                bank?.interests?.push(newData);
               }
               return bank;
             });
-            setBanks(newBanks);
+            newBanks && setBanks(newBanks);
             setType && setType({ id: -1, name: "" });
             setCredit && setCredit({ id: -1, label: "", value: 0 });
             setOpenCard &&
@@ -179,6 +185,7 @@ const BankCardDetail = ({
             console.log(banks);
           })}
           variant="contained"
+          disabled={disabled}
           color="success"
           sx={{ height: "auto", fontSize: "1rem" }}
         >
@@ -187,6 +194,12 @@ const BankCardDetail = ({
         <Button
           variant="contained"
           color="error"
+          onClick={() => {
+            interestId && deleteInterest({ id: interestId, bank_id: bankId });
+            setOpenCard &&
+              openCard &&
+              setOpenCard({ ...openCard, open: false });
+          }}
           sx={{
             height: "auto",
             marginLeft: "1rem",

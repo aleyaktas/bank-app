@@ -58,6 +58,7 @@ const BankCardDetail = ({
   });
 
   const { setModal, banks, setBanks } = useContext(Context);
+  const bank = banks?.find((item) => item.id === bankId);
   return (
     <Grid container direction="row" mb={2}>
       <Grid item xs={9} container justifyContent="space-around" direction="row">
@@ -83,6 +84,11 @@ const BankCardDetail = ({
                   sx={{ fontSize: "1.4rem" }}
                   key={item.id}
                   value={item.name}
+                  disabled={
+                    bank.interests.filter((interest: any) => {
+                      return interest.credit_type === item.id;
+                    }).length === item.vade.length
+                  }
                   onClick={() =>
                     setType &&
                     setType({
@@ -121,6 +127,14 @@ const BankCardDetail = ({
                       sx={{ fontSize: "1.4rem" }}
                       key={vade.value}
                       value={vade.value}
+                      disabled={
+                        bank.interests.filter((interest: any) => {
+                          return (
+                            interest.credit_type === type.id &&
+                            interest.time_option === vade.id
+                          );
+                        }).length === 1
+                      }
                       onClick={() =>
                         setCredit &&
                         setCredit({

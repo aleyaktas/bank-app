@@ -22,7 +22,13 @@ a {
 * {
   box-sizing: border-box;
 }
-
+.css-o4b71y-MuiAccordionSummary-content.Mui-expanded {
+  place-content: center;
+  align-items: center;
+}
+.css-o4b71y-MuiAccordionSummary-content.Mui-expanded .showDeleteBtn {
+  display: block;
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

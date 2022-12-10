@@ -13,7 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div style={styles.container}>
-      <main>{children}</main>
+      <main style={{ height: "100vh", overflowY: "auto" }}>{children}</main>
     </div>
   );
 };

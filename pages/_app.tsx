@@ -7,6 +7,7 @@ import React, { createContext, useEffect, useState } from "react";
 import setAuthToken from "../utils/setAuthToken";
 import getConfig from "next/config";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -31,14 +32,17 @@ export const Context = createContext<ContextProps>({
 export default function App({ Component, pageProps }: AppProps) {
   const [user, setUser] = useState("");
   const [modal, setModal] = useState("");
-
-  // axios.defaults.baseURL = "http://localhost:80/";
+  const [banks, setBanks] = useState<any[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const token = Cookies.get("token");
     console.log(token);
     if (token) {
       setUser(token);
+    } else {
+      setUser("");
+      router.push("/");
     }
   }, []);
 
@@ -49,8 +53,8 @@ export default function App({ Component, pageProps }: AppProps) {
         setUser,
         modal,
         setModal,
-        banks: [],
-        setBanks: () => {},
+        banks,
+        setBanks,
       }}
     >
       <Layout>

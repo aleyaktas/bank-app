@@ -22,12 +22,27 @@ a {
 * {
   box-sizing: border-box;
 }
-.css-o4b71y-MuiAccordionSummary-content.Mui-expanded {
+#accordion .css-o4b71y-MuiAccordionSummary-content.Mui-expanded {
   place-content: center;
   align-items: center;
 }
 .css-o4b71y-MuiAccordionSummary-content.Mui-expanded .showDeleteBtn {
   display: block;
+}
+.css-2w9zv2-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: black;
+  font-size: 1.8rem !important;
+}
+.css-1wfewgb-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: black;
+  font-size: 1.8rem !important;
+}
+.MuiAccordionSummary-content.MuiAccordionSummary-contentGutters.css-o4b71y-MuiAccordionSummary-content {
+  display: flex;
+  justify-content: space-evenly;
+}
+div#simple-tabpanel-0 {
+  width: 50%;
 }
 @media (prefers-color-scheme: dark) {
   html {

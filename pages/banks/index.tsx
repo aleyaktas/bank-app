@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import styleFn from "./Dashboard.styles";
+import styleFn from "./Banks.styles";
 import {
   Button,
   Accordion,
@@ -70,7 +70,10 @@ export default function Dashboard({ allBanks }: DashboardProps) {
     id: 0,
     open: false,
   });
-  setBanks(allBanks);
+  useEffect(() => {
+    setBanks && setBanks(allBanks);
+  }, []);
+
   console.log(allBanks);
   console.log(user);
 
@@ -86,8 +89,8 @@ export default function Dashboard({ allBanks }: DashboardProps) {
 
   const onClickDeleteBank = async (e: any, id: number) => {
     e.preventDefault();
-    const res = await deleteBank({ id });
-    banks && setBanks(banks.filter((bank) => bank.id !== id));
+    await deleteBank({ id });
+    setBanks && banks && setBanks(banks?.filter((bank) => bank.id !== id));
   };
 
   const router = useRouter();
@@ -128,14 +131,15 @@ export default function Dashboard({ allBanks }: DashboardProps) {
           {banks?.map((bank: BankProps) => {
             return (
               <Accordion
+                id="accordion"
                 sx={{
                   width: "50%",
                   marginBottom: "1.6rem",
                   backgroundColor: "white",
                   boxShadow: "0 0 10px 0 rgba(0,0,0,0.1)",
                 }}
-                key={bank.id}
-                defaultValue={bank.bank_name}
+                key={bank?.id}
+                defaultValue={bank?.bank_name}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon fontSize="large" />}
@@ -143,14 +147,14 @@ export default function Dashboard({ allBanks }: DashboardProps) {
                   id="panel1a-header"
                 >
                   <Typography mr={1} fontSize="1.6rem">
-                    {bank.bank_name}
+                    {bank?.bank_name}
                   </Typography>
                   <Button
                     sx={{ display: "none", fontSize: "1rem" }}
                     className="showDeleteBtn"
                     variant="contained"
                     color="error"
-                    onClick={(e) => onClickDeleteBank(e, bank.id)}
+                    onClick={(e) => onClickDeleteBank(e, bank?.id)}
                   >
                     Sil
                   </Button>
@@ -167,7 +171,7 @@ export default function Dashboard({ allBanks }: DashboardProps) {
                       }}
                       onClick={() =>
                         setOpenCard({
-                          id: bank.id,
+                          id: bank?.id,
                           open: !openCard.open,
                         })
                       }
@@ -175,8 +179,8 @@ export default function Dashboard({ allBanks }: DashboardProps) {
                       <AddIcon />
                     </Button>
 
-                    <BankCardDetailList bankId={bank.id} />
-                    {openCard.id === bank.id &&
+                    <BankCardDetailList bankId={bank?.id} />
+                    {openCard.id === bank?.id &&
                       openCard.open &&
                       setOpenCard && (
                         <BankCard
@@ -184,9 +188,10 @@ export default function Dashboard({ allBanks }: DashboardProps) {
                           setCredit={setCredit}
                           type={type}
                           setType={setType}
-                          bankId={bank.id}
+                          bankId={bank?.id}
                           setOpenCard={setOpenCard}
                           openCard={openCard}
+                          isDelete
                         />
                       )}
                   </Grid>

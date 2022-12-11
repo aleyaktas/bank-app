@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { InterestProps } from "../../pages/dashboard/banks";
+import { InterestProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import instance, { serverSideConfig } from "../../utils/axios";
 import BankCardDetail from "../BankCardDetail/BankCardDetail";
@@ -19,12 +19,12 @@ const BankCardDetailList = ({ bankId }: BankCardDetailListProps) => {
             return (
               <BankCardDetail
                 disabled
-                interestId={interest.id}
-                bankId={interest.bank_id}
+                interestId={interest?.id}
+                bankId={interest?.bank_id}
                 type={{
-                  id: interest.credit_type,
+                  id: interest?.credit_type,
                   name:
-                    interest.credit_type === 1
+                    interest?.credit_type === 1
                       ? "Konut"
                       : interest.credit_type === 2
                       ? "Tüketici"
@@ -33,9 +33,9 @@ const BankCardDetailList = ({ bankId }: BankCardDetailListProps) => {
                       : "",
                 }}
                 credit={{
-                  id: interest.time_option,
+                  id: interest?.time_option,
                   label:
-                    interest.time_option === 1
+                    interest && interest.time_option === 1
                       ? "3 ay"
                       : interest.time_option === 2
                       ? "6 ay"

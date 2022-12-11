@@ -13,11 +13,7 @@ import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { addInterest, deleteInterest } from "../../pages/api";
-import {
-  CreditProps,
-  OpenCardProps,
-  TypeProps,
-} from "../../pages/dashboard/banks";
+import { CreditProps, OpenCardProps, TypeProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
 
@@ -32,6 +28,7 @@ interface BankCardProps {
   openCard?: OpenCardProps;
   setOpenCard?: React.Dispatch<React.SetStateAction<OpenCardProps>>;
   disabled?: boolean;
+  isDelete?: boolean;
 }
 
 const schema = object({
@@ -51,6 +48,7 @@ const BankCardDetail = ({
   openCard,
   setOpenCard,
   disabled,
+  isDelete,
 }: BankCardProps) => {
   type FormValues = InferType<typeof schema>;
   const { register, handleSubmit, formState } = useForm<FormValues>({
@@ -85,7 +83,7 @@ const BankCardDetail = ({
                   key={item.id}
                   value={item.name}
                   disabled={
-                    bank.interests.filter((interest: any) => {
+                    bank?.interests?.filter((interest: any) => {
                       return interest.credit_type === item.id;
                     }).length === item.vade.length
                   }
@@ -128,7 +126,7 @@ const BankCardDetail = ({
                       key={vade.value}
                       value={vade.value}
                       disabled={
-                        bank.interests.filter((interest: any) => {
+                        bank?.interests?.filter((interest: any) => {
                           return (
                             interest.credit_type === type.id &&
                             interest.time_option === vade.id
@@ -183,13 +181,22 @@ const BankCardDetail = ({
 
             const res = await addInterest(newData);
             console.log("res ", res);
-            const newBanks = banks?.map((bank) => {
-              if (bank.id === bankId) {
-                bank?.interests?.push(newData);
-              }
-              return bank;
-            });
-            newBanks && setBanks(newBanks);
+            setBanks &&
+              banks &&
+              setBanks(
+                banks?.map((bank) => {
+                  if (bank.id === bankId) {
+                    return {
+                      ...bank,
+                      interests: bank.interests
+                        ? [...bank.interests, res]
+                        : [res],
+                    };
+                  }
+                  return bank;
+                })
+              );
+
             setType && setType({ id: -1, name: "" });
             setCredit && setCredit({ id: -1, label: "", value: 0 });
             setOpenCard &&
@@ -208,11 +215,24 @@ const BankCardDetail = ({
         <Button
           variant="contained"
           color="error"
+          disabled={isDelete}
           onClick={() => {
             interestId && deleteInterest({ id: interestId, bank_id: bankId });
             setOpenCard &&
               openCard &&
               setOpenCard({ ...openCard, open: false });
+            setBanks &&
+              banks &&
+              setBanks(
+                banks?.map((bank) => {
+                  if (bank.id === bankId) {
+                    bank.interests = bank.interests.filter(
+                      (interest: any) => interest.id !== interestId
+                    );
+                  }
+                  return bank;
+                })
+              );
           }}
           sx={{
             height: "auto",

@@ -1,4 +1,4 @@
-import { DashboardStyleProps } from "./Dashboard.types";
+import { DashboardStyleProps } from "./Banks.types";
 
 const styleFn: DashboardStyleProps = () => ({
   container: {

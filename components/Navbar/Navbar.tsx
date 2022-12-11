@@ -34,13 +34,17 @@ const Navbar = () => {
             {user ? (
               <>
                 <Grid container justifyContent="start" alignItems="center">
-                  <Button color="inherit" sx={{ fontSize: "1.4rem" }}>
+                  <Button
+                    color="inherit"
+                    sx={{ fontSize: "1.4rem" }}
+                    onClick={() => router.push("/calculate")}
+                  >
                     Hesaplama
                   </Button>
                   <Button
                     color="inherit"
                     sx={{ fontSize: "1.4rem" }}
-                    onClick={() => router.push("/dashboard/banks")}
+                    onClick={() => router.push("/banks")}
                   >
                     Banka Ekle
                   </Button>

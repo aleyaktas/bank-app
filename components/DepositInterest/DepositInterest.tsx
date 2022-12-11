@@ -21,7 +21,7 @@ import { CreditProps, TypeProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
 
-interface CreditIntereestProps {
+interface DepositInterestProps {
   type?: TypeProps;
   setType?: React.Dispatch<React.SetStateAction<TypeProps>>;
   credit?: CreditProps;
@@ -30,18 +30,17 @@ interface CreditIntereestProps {
 }
 
 const schema = object({
-  credit_type: string().required("Credit type is required"),
   time_option: string().required("Time option is required").min(3),
-  credit_amount: number().required("Credit amount is required").notOneOf([0]),
+  money_amount: number().required("Money amount is required"),
 });
 
-const CreditInterest = ({
+const DepositInterest = ({
   type,
   setType,
   credit,
   setCredit,
   bankId,
-}: CreditIntereestProps) => {
+}: DepositInterestProps) => {
   type FormValues = InferType<typeof schema>;
   const { register, handleSubmit, formState, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -50,9 +49,8 @@ const CreditInterest = ({
 
   const { banks, setBanks } = useContext(Context);
   const [formData, setFormData] = React.useState({
-    credit_type: "",
     time_option: "",
-    credit_amount: 0,
+    money_amount: 0,
   });
   const [expanded, setExpanded] = useState<number>(-1);
   console.log(expanded);
@@ -71,51 +69,7 @@ const CreditInterest = ({
   return (
     <Grid container mb={2}>
       <Grid item xs={9} container justifyContent="space-around" direction="row">
-        <FormControl sx={{ width: "30%" }}>
-          <InputLabel sx={{ fontSize: "1.6rem" }} id="demo-simple-select-label">
-            Kredi Türü
-          </InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={type?.name}
-            label="Tür"
-            sx={{ fontSize: "1.6rem" }}
-            {...register("credit_type")}
-          >
-            {data.map((item) => {
-              return (
-                <MenuItem
-                  sx={{ fontSize: "1.4rem" }}
-                  key={item.id}
-                  value={item.name}
-                  disabled={
-                    !banks?.some((bank) =>
-                      bank?.interests?.some(
-                        (interest: any) => interest.credit_type === item.id
-                      )
-                    )
-                  }
-                  onClick={() => {
-                    setCredit && setCredit({} as CreditProps);
-                    reset({
-                      credit_type: item.name,
-                      time_option: "",
-                    });
-                    setType &&
-                      setType({
-                        id: item.id,
-                        name: item.name,
-                      });
-                  }}
-                >
-                  {item.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-        <FormControl sx={{ width: "30%" }}>
+        <FormControl sx={{ width: "35%" }}>
           <InputLabel sx={{ fontSize: "1.4rem" }} id="demo-simple-select-label">
             Vade
           </InputLabel>
@@ -127,7 +81,7 @@ const CreditInterest = ({
             {...register("time_option")}
           >
             {data.map((item) => {
-              if (item.name === type?.name) {
+              if (item.name === "Mevduat") {
                 return item.vade.map((vade: any) => {
                   return (
                     <MenuItem
@@ -162,7 +116,7 @@ const CreditInterest = ({
           </Select>
         </FormControl>
         <TextField
-          sx={{ width: "30%", fontSize: "1.4rem" }}
+          sx={{ width: "60%", fontSize: "1.4rem" }}
           InputLabelProps={{
             style: { fontSize: "1.4rem" },
           }}
@@ -170,9 +124,9 @@ const CreditInterest = ({
             style: { fontSize: "1.4rem" },
           }}
           id="standard-basic"
-          label="Kredi Miktarı"
+          label="Yatırılacak Tutar"
           variant="outlined"
-          {...register("credit_amount")}
+          {...register("money_amount")}
         />
       </Grid>
       <Grid item xs={3} container justifyContent="center" alignItems="center">
@@ -188,9 +142,9 @@ const CreditInterest = ({
         {banks?.map((bank, index: number) => {
           return bank.interests.map((interest: any) => {
             if (
-              interest.credit_type === type?.id &&
               interest.time_option === credit?.id &&
-              formData.credit_amount
+              formData.money_amount &&
+              interest.credit_type === 3
             ) {
               return (
                 <Accordion
@@ -211,7 +165,6 @@ const CreditInterest = ({
                       container
                       justifyContent="space-between"
                       alignItems="center"
-                      textAlign="center"
                     >
                       <Grid item xs={4}>
                         <Typography
@@ -224,32 +177,14 @@ const CreditInterest = ({
                           {bank.bank_name}
                         </Typography>
                       </Grid>
-                      <Grid item xs={4}>
+                      <Grid item xs={8} textAlign="end">
                         <Typography
                           sx={{ color: "text.secondary", fontSize: "1.6rem" }}
                         >
-                          Toplam Geri Ödeme
+                          Aylık faiz oranı: {interest.interest}%
                         </Typography>
                       </Grid>
-                      <Grid item xs={4}>
-                        <Typography
-                          sx={{ color: "text.secondary", fontSize: "1.6rem" }}
-                        >
-                          {credit && type?.id === 1
-                            ? (formData.credit_amount *
-                                interest.interest *
-                                credit?.value) /
-                                100 +
-                              formData.credit_amount
-                            : credit && (type?.id === 2 || type?.id === 3)
-                            ? (formData.credit_amount *
-                                interest.interest *
-                                credit?.value) /
-                                1200 +
-                              formData.credit_amount
-                            : 0}
-                        </Typography>
-                      </Grid>
+
                       {expanded !== index && (
                         <Grid sx={{ width: "100%", textAlign: "center" }}>
                           <Button
@@ -280,43 +215,32 @@ const CreditInterest = ({
                         fontSize: "1.6rem",
                       }}
                     >
-                      Hesaba Yatırılacak Tutar: {formData.credit_amount}
+                      Mevduat Tutarı: {formData.money_amount}
                     </Typography>
                     <Typography
                       sx={{
                         fontSize: "1.6rem",
                       }}
                     >
-                      {type && type?.name} Kredisi - {credit && credit?.label}{" "}
-                      vade - {credit?.id === 1 ? "Yıllık" : "Aylık"} faiz oranı:
-                      %{interest.interest}
+                      {credit?.label} vade sonunda alınacak faiz:{" "}
+                      {credit &&
+                        (formData.money_amount *
+                          interest.interest *
+                          credit?.value) /
+                          1200}
                     </Typography>
                     <Typography
                       sx={{
                         fontSize: "1.6rem",
                       }}
                     >
-                      {credit && type?.id === 1 ? "Yıllık" : "Aylık"} geri ödeme
-                      tutarı:{" "}
-                      {credit && type?.id === 1
-                        ? (
-                            ((formData.credit_amount *
-                              interest.interest *
-                              credit?.value) /
-                              100 +
-                              formData.credit_amount) /
-                            credit?.value
-                          ).toFixed(2)
-                        : credit && (type?.id === 2 || type?.id === 3)
-                        ? (
-                            ((formData.credit_amount *
-                              interest.interest *
-                              credit?.value) /
-                              1200 +
-                              formData.credit_amount) /
-                            credit?.value
-                          ).toFixed(2)
-                        : 0}
+                      {credit?.label} vade sonunda toplam mevduat:{" "}
+                      {credit &&
+                        (formData.money_amount *
+                          interest.interest *
+                          credit?.value) /
+                          1200 +
+                          formData.money_amount}
                     </Typography>
                     {expanded === index && (
                       <Grid sx={{ width: "100%", textAlign: "center" }}>
@@ -344,4 +268,4 @@ const CreditInterest = ({
   );
 };
 
-export default CreditInterest;
+export default DepositInterest;

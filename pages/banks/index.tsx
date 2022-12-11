@@ -8,6 +8,7 @@ import {
   Typography,
   AccordionDetails,
   Grid,
+  Alert,
 } from "@mui/material";
 import AddBankModal from "../../components/modals/AddBankModal/AddBank";
 import instance, { serverSideConfig } from "../../utils/axios";
@@ -21,6 +22,7 @@ import { deleteBank } from "../api";
 
 interface DashboardProps {
   allBanks: any[];
+  error?: string;
 }
 
 export interface TypeProps {
@@ -53,16 +55,24 @@ export interface BankProps {
   interests: InterestProps[];
 }
 export const getServerSideProps = async (context: any) => {
-  const res = await instance.get("/api/banks", serverSideConfig(context));
-  console.log(res?.data);
-  return {
-    props: {
-      allBanks: res.data.data,
-    },
-  };
+  try {
+    const res = await instance.get("/api/banks", serverSideConfig(context));
+    console.log(res?.data);
+    return {
+      props: {
+        allBanks: res.data.data,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        error: "Token is not valid",
+      },
+    };
+  }
 };
 
-export default function Dashboard({ allBanks }: DashboardProps) {
+export default function Dashboard({ allBanks, error }: DashboardProps) {
   const styles = styleFn();
   const { user, banks, setBanks, setModal, setUser, modal } =
     useContext(Context);
@@ -70,8 +80,12 @@ export default function Dashboard({ allBanks }: DashboardProps) {
     id: 0,
     open: false,
   });
+  const [expanded, setExpanded] = useState<number>(-1);
   useEffect(() => {
     setBanks && setBanks(allBanks);
+    error && setUser("");
+    error && Cookies.remove("token");
+    error && router.push("/");
   }, []);
 
   console.log(allBanks);
@@ -92,6 +106,7 @@ export default function Dashboard({ allBanks }: DashboardProps) {
     await deleteBank({ id });
     setBanks && banks && setBanks(banks?.filter((bank) => bank.id !== id));
   };
+  const handleExpanded = (panel: number) => setExpanded(panel);
 
   const router = useRouter();
 
@@ -117,7 +132,13 @@ export default function Dashboard({ allBanks }: DashboardProps) {
         <Button
           onClick={addBank}
           variant="contained"
-          sx={{ backgroundColor: "#E76F51", fontSize: "1.4rem" }}
+          sx={{
+            backgroundColor: "#E76F51",
+            fontSize: "1.4rem",
+            ":hover": {
+              backgroundColor: "#E76F51",
+            },
+          }}
         >
           Banka Ekle
         </Button>
@@ -126,12 +147,18 @@ export default function Dashboard({ allBanks }: DashboardProps) {
           justifyContent="center"
           alignItems="center"
           direction="column"
-          marginTop="2rem"
+          marginTop="3rem"
         >
-          {banks?.map((bank: BankProps) => {
+          {banks?.map((bank: BankProps, index: number) => {
             return (
               <Accordion
+                expanded={expanded === index}
                 id="accordion"
+                onChange={() =>
+                  expanded === index
+                    ? handleExpanded(-1)
+                    : handleExpanded(index)
+                }
                 sx={{
                   width: "50%",
                   marginBottom: "1.6rem",
@@ -199,6 +226,19 @@ export default function Dashboard({ allBanks }: DashboardProps) {
               </Accordion>
             );
           })}
+          {banks?.length === 0 && (
+            <Alert
+              severity="info"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "1.2rem",
+              }}
+            >
+              Henüz banka eklenmemiş. Lütfen banka ekleyiniz.
+            </Alert>
+          )}
         </Grid>
         ;
       </>

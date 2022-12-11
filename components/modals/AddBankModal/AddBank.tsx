@@ -29,7 +29,7 @@ type AddBankProps = {
 
 type FormValues = InferType<typeof schema>;
 const AddBankModal = ({ handleClose }: AddBankProps) => {
-  const { register, handleSubmit, formState } = useForm<FormValues>({
+  const { register, handleSubmit, formState, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
   const { setUser, modal, setBanks, banks } = useContext(Context);
@@ -38,9 +38,13 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
   const router = useRouter();
   const onSubmit = async (data: FormValues) => {
     const bankData = await addBank(data);
+
     banks?.push(bankData);
     banks && setBanks(banks);
     console.log("submit");
+    reset({
+      name: "",
+    });
     handleClose();
   };
   const styles = styleFn();
@@ -48,7 +52,10 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
     <Modal
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
       open={modal === "addBank"}
-      onClose={handleClose}
+      onClose={() => {
+        handleClose();
+        reset({ name: "" });
+      }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -89,6 +96,7 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
                     label="Bank Name"
                     variant="filled"
                     fullWidth
+                    InputProps={{ style: { fontSize: "1.4rem" } }}
                     InputLabelProps={{ style: { fontSize: "1.4rem" } }}
                     {...register("name")}
                   />

@@ -39,10 +39,12 @@ a {
 }
 .MuiAccordionSummary-content.MuiAccordionSummary-contentGutters.css-o4b71y-MuiAccordionSummary-content {
   display: flex;
-  justify-content: space-evenly;
 }
 div#simple-tabpanel-0 {
   width: 50%;
+}
+div#simple-tabpanel-1 {
+  width: 35%;
 }
 @media (prefers-color-scheme: dark) {
   html {

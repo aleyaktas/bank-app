@@ -43,13 +43,17 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
     const userData = await handleLogin(data);
     console.log(userData);
     setUser(userData);
-    router.push("/dashboard");
+    router.push("/banks");
     handleClose();
   };
   const styles = styleFn();
   return (
     <Modal
-      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
       open={modal === "login"}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
@@ -88,6 +92,7 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
                     label="Username"
                     variant="filled"
                     fullWidth
+                    InputProps={{ style: { fontSize: "1.4rem" } }}
                     InputLabelProps={{ style: { fontSize: "1.4rem" } }}
                     {...register("username")}
                   />
@@ -98,6 +103,7 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
                     variant="filled"
                     type="password"
                     fullWidth
+                    InputProps={{ style: { fontSize: "1.4rem" } }}
                     InputLabelProps={{ style: { fontSize: "1.4rem" } }}
                     {...register("password")}
                   />

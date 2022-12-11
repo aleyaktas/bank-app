@@ -7,6 +7,9 @@ import { Alert, Grid } from "@mui/material";
 import CreditInterest from "../../components/CreditInterest/CreditInterest";
 import instance, { serverSideConfig } from "../../utils/axios";
 import { Context } from "../_app";
+import DepositInterest from "../../components/DepositInterest/DepositInterest";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -16,16 +19,25 @@ interface TabPanelProps {
 
 interface CalculateProps {
   allBanks: any[];
+  error?: string;
 }
 
 export const getServerSideProps = async (context: any) => {
-  const res = await instance.get("/api/banks", serverSideConfig(context));
-  console.log(res?.data);
-  return {
-    props: {
-      allBanks: res.data.data,
-    },
-  };
+  try {
+    const res = await instance.get("/api/banks", serverSideConfig(context));
+    console.log(res?.data);
+    return {
+      props: {
+        allBanks: res.data.data,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        error: "Token is not valid",
+      },
+    };
+  }
 };
 
 function TabPanel(props: TabPanelProps) {
@@ -55,7 +67,18 @@ function a11yProps(index: number) {
   };
 }
 
-export default function Calculate({ allBanks }: CalculateProps) {
+export default function Calculate({ allBanks, error }: CalculateProps) {
+  const router = useRouter();
+  const { banks, setBanks, setUser } = useContext(Context);
+
+  useEffect(() => {
+    if (error) {
+      setUser("");
+      Cookies.remove("token");
+      router.push("/login");
+    }
+  }, []);
+
   const [value, setValue] = useState(0);
   const [type, setType] = useState({
     id: 0,
@@ -66,8 +89,6 @@ export default function Calculate({ allBanks }: CalculateProps) {
     label: "",
     value: 0,
   });
-
-  const { banks, setBanks } = useContext(Context);
 
   useEffect(() => {
     setBanks(allBanks);
@@ -97,12 +118,7 @@ export default function Calculate({ allBanks }: CalculateProps) {
           />
         </Tabs>
       </Box>
-      <Grid
-        container
-        justifyContent="center"
-        direction="row"
-        sx={{ height: "100vh" }}
-      >
+      <Grid container justifyContent="center" direction="row">
         <TabPanel value={value} index={0}>
           <Alert
             severity="info"
@@ -122,9 +138,19 @@ export default function Calculate({ allBanks }: CalculateProps) {
         </TabPanel>
       </Grid>
 
-      <TabPanel value={value} index={1}>
-        Mevduat Faizi
-      </TabPanel>
+      <Grid container justifyContent="center" direction="row">
+        <TabPanel value={value} index={1}>
+          <Alert
+            severity="info"
+            sx={{ fontSize: "1.4rem", placeContent: "center" }}
+          >
+            Mevduat faizi hesaplaması yapabilmek vade seçmeniz gerekmektedir.
+          </Alert>
+          <br />
+          <br />
+          <DepositInterest credit={credit} setCredit={setCredit} />
+        </TabPanel>
+      </Grid>
     </Box>
   );
 }

@@ -20,6 +20,7 @@ const styleFn: LoginStyleProps = () => ({
   },
   gridContainer: {
     backgroundColor: "white",
+    borderRadius: "0.5rem",
   },
   gridSize: {
     width: "100%",

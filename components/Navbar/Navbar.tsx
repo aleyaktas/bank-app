@@ -4,6 +4,7 @@ import { AppBar, Toolbar, Typography, Button, Grid } from "@mui/material";
 import { useRouter } from "next/router";
 import { Context } from "../../pages/_app";
 import { handleLogout } from "../../pages/api";
+import Link from "next/link";
 
 const Navbar = () => {
   const styles = styleFn();
@@ -23,31 +24,38 @@ const Navbar = () => {
       <AppBar sx={styles.appBar} position="static">
         <Grid container sx={{ width: "inherit" }}>
           <Toolbar sx={{ width: "inherit" }}>
-            <Typography
-              fontStyle="italic"
-              variant="h6"
-              component="div"
-              sx={{ mr: 2, fontSize: "1.8rem" }}
-            >
-              BANKAPP
-            </Typography>
+            <Link href="/banks">
+              <Button
+                component="div"
+                variant="text"
+                color="inherit"
+                sx={{ mr: 2, fontSize: "1.8rem", fontStyle: "italic" }}
+              >
+                BANKAPP
+              </Button>
+            </Link>
             {user ? (
               <>
                 <Grid container justifyContent="start" alignItems="center">
-                  <Button
-                    color="inherit"
-                    sx={{ fontSize: "1.4rem" }}
-                    onClick={() => router.push("/calculate")}
-                  >
-                    Hesaplama
-                  </Button>
-                  <Button
-                    color="inherit"
-                    sx={{ fontSize: "1.4rem" }}
-                    onClick={() => router.push("/banks")}
-                  >
-                    Banka Ekle
-                  </Button>
+                  <Link href="/calculate">
+                    <Button
+                      color="inherit"
+                      sx={{ fontSize: "1.4rem" }}
+                      onClick={() => router.push("/calculate")}
+                    >
+                      Hesaplama
+                    </Button>
+                  </Link>
+
+                  <Link href="/banks">
+                    <Button
+                      color="inherit"
+                      sx={{ fontSize: "1.4rem" }}
+                      onClick={() => router.push("/banks")}
+                    >
+                      Banka Ekle
+                    </Button>
+                  </Link>
                 </Grid>
                 <Button
                   onClick={logout}

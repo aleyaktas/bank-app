@@ -1,3 +1,4 @@
+import { Alert } from "@mui/material";
 import React, { useContext } from "react";
 import { InterestProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
@@ -15,6 +16,29 @@ const BankCardDetailList = ({ bankId }: BankCardDetailListProps) => {
     <>
       {banks?.map((bank) => {
         if (bank?.id === bankId) {
+          if (bank?.interests?.length === 0) {
+            return (
+              bank?.interests?.length === 0 && (
+                <Alert
+                  severity="info"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "auto",
+                    fontSize: "1.2rem",
+                    placeContent: "center",
+                    marginTop: "1rem",
+                  }}
+                >
+                  Bu bankaya ait faiz oranı bulunmamaktadır. Eklemek için ' + '
+                  butonuna tıklayın.
+                </Alert>
+              )
+            );
+          }
+
           return bank?.interests?.map((interest: InterestProps) => {
             return (
               <BankCardDetail

@@ -7,7 +7,7 @@ const styleFn: DashboardStyleProps = () => ({
     alignItems: "center",
     flexDirection: "column",
     width: "100%",
-    marginTop: "6rem",
+    marginTop: "5rem",
   },
 });
 

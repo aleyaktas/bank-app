@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -13,7 +14,19 @@ export default function Home() {
   return (
     <div>
       <LoginModal modal={modal} handleClose={modalClose} />
-      <h1>Home</h1>
+      <div
+        style={{
+          width: "100%",
+          height: "93vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography fontWeight="300" sx={{ color: "black" }} variant="h1">
+          Welcome Bank App
+        </Typography>
+      </div>
     </div>
   );
 }

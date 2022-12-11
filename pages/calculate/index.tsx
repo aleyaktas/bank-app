@@ -75,7 +75,7 @@ export default function Calculate({ allBanks, error }: CalculateProps) {
     if (error) {
       setUser("");
       Cookies.remove("token");
-      router.push("/login");
+      router.push("/");
     }
   }, []);
 

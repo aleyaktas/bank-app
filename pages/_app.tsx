@@ -37,7 +37,6 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     const token = Cookies.get("token");
-    console.log(token);
     if (token) {
       setUser(token);
     } else {

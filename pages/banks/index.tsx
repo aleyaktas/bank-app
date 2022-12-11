@@ -17,7 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Cookies from "js-cookie";
 import AddIcon from "@mui/icons-material/Add";
 import BankCard from "../../components/BankCardDetail/BankCardDetail";
-import BankCardDetailList from "../../components/BankCardList/BankCardDetailList";
+import BankCardDetailList from "../../components/BankCardDetailList/BankCardDetailList";
 import { deleteBank } from "../api";
 
 interface DashboardProps {
@@ -206,7 +206,7 @@ export default function Dashboard({ allBanks, error }: DashboardProps) {
                       <AddIcon />
                     </Button>
 
-                    <BankCardDetailList bankId={bank?.id} />
+                    <BankCardDetailList openCard={openCard} bankId={bank?.id} />
                     {openCard.id === bank?.id &&
                       openCard.open &&
                       setOpenCard && (

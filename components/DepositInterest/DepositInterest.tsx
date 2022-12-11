@@ -20,6 +20,7 @@ import { object, string, number, array, InferType, TypeOf } from "yup";
 import { CreditProps, TypeProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
+import styleFn from "./DepositInterest.styles";
 
 interface DepositInterestProps {
   type?: TypeProps;
@@ -47,37 +48,33 @@ const DepositInterest = ({
   });
   const { errors } = formState;
 
+  const styles = styleFn();
+
   const { banks, setBanks } = useContext(Context);
   const [formData, setFormData] = React.useState({
     time_option: "",
     money_amount: 0,
   });
   const [expanded, setExpanded] = useState<number>(-1);
-  console.log(expanded);
 
   const handleExpanded = (panel: number) => setExpanded(panel);
 
-  console.log(errors);
-
   const onSubmit = (data: FormValues) => {
     setFormData(data);
-
-    console.log(data);
-    console.log(credit);
   };
 
   return (
     <Grid container mb={2}>
       <Grid item xs={9} container justifyContent="space-around" direction="row">
         <FormControl sx={{ width: "35%" }}>
-          <InputLabel sx={{ fontSize: "1.4rem" }} id="demo-simple-select-label">
+          <InputLabel sx={styles.fontSizeMd} id="demo-simple-select-label">
             Vade
           </InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={credit?.label}
-            sx={{ fontSize: "1.4rem" }}
+            sx={styles.fontSizeMd}
             {...register("time_option")}
           >
             {data.map((item) => {
@@ -85,7 +82,7 @@ const DepositInterest = ({
                 return item.vade.map((vade: any) => {
                   return (
                     <MenuItem
-                      sx={{ fontSize: "1.4rem" }}
+                      sx={styles.fontSizeMd}
                       key={vade.id}
                       value={vade.label}
                       disabled={
@@ -116,12 +113,12 @@ const DepositInterest = ({
           </Select>
         </FormControl>
         <TextField
-          sx={{ width: "60%", fontSize: "1.4rem" }}
+          sx={{ width: "60%" }}
           InputLabelProps={{
-            style: { fontSize: "1.4rem" },
+            style: styles.fontSizeMd,
           }}
           InputProps={{
-            style: { fontSize: "1.4rem" },
+            style: styles.fontSizeMd,
           }}
           id="standard-basic"
           label="Yatırılacak Tutar"
@@ -147,13 +144,7 @@ const DepositInterest = ({
               interest.credit_type === 3
             ) {
               return (
-                <Accordion
-                  expanded={expanded === index}
-                  sx={{
-                    marginBottom: "2rem",
-                    width: "100%",
-                  }}
-                >
+                <Accordion expanded={expanded === index} sx={styles.accordion}>
                   <AccordionSummary
                     sx={{
                       pointerEvents: "none",
@@ -168,19 +159,15 @@ const DepositInterest = ({
                     >
                       <Grid item xs={4}>
                         <Typography
-                          sx={{
-                            color: "text.secondary",
-                            textTransform: "uppercase",
-                            fontSize: "1.6rem",
-                          }}
+                          sx={
+                            (styles.typography, { textTransform: "uppercase" })
+                          }
                         >
                           {bank.bank_name}
                         </Typography>
                       </Grid>
                       <Grid item xs={8} textAlign="end">
-                        <Typography
-                          sx={{ color: "text.secondary", fontSize: "1.6rem" }}
-                        >
+                        <Typography sx={styles.typography}>
                           Aylık faiz oranı: {interest.interest}%
                         </Typography>
                       </Grid>
@@ -190,11 +177,7 @@ const DepositInterest = ({
                           <Button
                             onClick={() => handleExpanded(index)}
                             variant="outlined"
-                            sx={{
-                              fontSize: "1rem",
-                              marginTop: "1rem",
-                              pointerEvents: "auto",
-                            }}
+                            sx={styles.detailsButton}
                           >
                             Detaylar için tıklayın
                           </Button>
@@ -202,14 +185,7 @@ const DepositInterest = ({
                       )}
                     </Grid>
                   </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                  <AccordionDetails sx={styles.accordionDetails}>
                     <Typography
                       sx={{
                         fontSize: "1.6rem",

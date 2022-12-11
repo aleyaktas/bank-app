@@ -3,9 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { useRouter } from "next/router";
-
 import styleFn from "./AddBank.styles";
-
 import {
   FormControl,
   Button,
@@ -35,13 +33,10 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
   const { setUser, modal, setBanks, banks } = useContext(Context);
   const { errors } = formState;
 
-  const router = useRouter();
   const onSubmit = async (data: FormValues) => {
     const bankData = await addBank(data);
-
     banks?.push(bankData);
     banks && setBanks(banks);
-    console.log("submit");
     reset({
       name: "",
     });

@@ -12,16 +12,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { CreditProps, TypeProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
+import styleFn from "./CreditInterest.styles";
 
-interface CreditIntereestProps {
+interface CreditInterestProps {
   type?: TypeProps;
   setType?: React.Dispatch<React.SetStateAction<TypeProps>>;
   credit?: CreditProps;
@@ -40,13 +39,13 @@ const CreditInterest = ({
   setType,
   credit,
   setCredit,
-  bankId,
-}: CreditIntereestProps) => {
+}: CreditInterestProps) => {
   type FormValues = InferType<typeof schema>;
   const { register, handleSubmit, formState, reset } = useForm<FormValues>({
     resolver: yupResolver(schema),
   });
   const { errors } = formState;
+  const styles = styleFn();
 
   const { banks, setBanks } = useContext(Context);
   const [formData, setFormData] = React.useState({
@@ -55,24 +54,18 @@ const CreditInterest = ({
     credit_amount: 0,
   });
   const [expanded, setExpanded] = useState<number>(-1);
-  console.log(expanded);
 
   const handleExpanded = (panel: number) => setExpanded(panel);
 
-  console.log(errors);
-
   const onSubmit = (data: FormValues) => {
     setFormData(data);
-
-    console.log(data);
-    console.log(credit);
   };
 
   return (
     <Grid container mb={2}>
       <Grid item xs={9} container justifyContent="space-around" direction="row">
         <FormControl sx={{ width: "30%" }}>
-          <InputLabel sx={{ fontSize: "1.6rem" }} id="demo-simple-select-label">
+          <InputLabel sx={styles.fontSizeLg} id="demo-simple-select-label">
             Kredi Türü
           </InputLabel>
           <Select
@@ -80,13 +73,13 @@ const CreditInterest = ({
             id="demo-simple-select"
             value={type?.name}
             label="Tür"
-            sx={{ fontSize: "1.6rem" }}
+            sx={styles.fontSizeLg}
             {...register("credit_type")}
           >
             {data.map((item) => {
               return (
                 <MenuItem
-                  sx={{ fontSize: "1.4rem" }}
+                  sx={styles.fontSizeMd}
                   key={item.id}
                   value={item.name}
                   disabled={
@@ -116,14 +109,14 @@ const CreditInterest = ({
           </Select>
         </FormControl>
         <FormControl sx={{ width: "30%" }}>
-          <InputLabel sx={{ fontSize: "1.4rem" }} id="demo-simple-select-label">
+          <InputLabel sx={styles.fontSizeMd} id="demo-simple-select-label">
             Vade
           </InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             value={credit?.label}
-            sx={{ fontSize: "1.4rem" }}
+            sx={styles.fontSizeMd}
             {...register("time_option")}
           >
             {data.map((item) => {
@@ -131,7 +124,7 @@ const CreditInterest = ({
                 return item.vade.map((vade: any) => {
                   return (
                     <MenuItem
-                      sx={{ fontSize: "1.4rem" }}
+                      sx={styles.fontSizeMd}
                       key={vade.id}
                       value={vade.label}
                       disabled={
@@ -162,12 +155,12 @@ const CreditInterest = ({
           </Select>
         </FormControl>
         <TextField
-          sx={{ width: "30%", fontSize: "1.4rem" }}
+          sx={{ width: "30%" }}
           InputLabelProps={{
-            style: { fontSize: "1.4rem" },
+            style: styles.fontSizeMd,
           }}
           InputProps={{
-            style: { fontSize: "1.4rem" },
+            style: styles.fontSizeMd,
           }}
           id="standard-basic"
           label="Kredi Miktarı"
@@ -193,13 +186,7 @@ const CreditInterest = ({
               formData.credit_amount
             ) {
               return (
-                <Accordion
-                  expanded={expanded === index}
-                  sx={{
-                    marginBottom: "2rem",
-                    width: "100%",
-                  }}
-                >
+                <Accordion expanded={expanded === index} sx={styles.accordion}>
                   <AccordionSummary
                     sx={{
                       pointerEvents: "none",
@@ -215,26 +202,20 @@ const CreditInterest = ({
                     >
                       <Grid item xs={4}>
                         <Typography
-                          sx={{
-                            color: "text.secondary",
-                            textTransform: "uppercase",
-                            fontSize: "1.6rem",
-                          }}
+                          sx={
+                            (styles.typography, { textTransform: "uppercase" })
+                          }
                         >
                           {bank.bank_name}
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography
-                          sx={{ color: "text.secondary", fontSize: "1.6rem" }}
-                        >
+                        <Typography sx={styles.typography}>
                           Toplam Geri Ödeme
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography
-                          sx={{ color: "text.secondary", fontSize: "1.6rem" }}
-                        >
+                        <Typography sx={styles.typography}>
                           {credit && type?.id === 1
                             ? (formData.credit_amount *
                                 interest.interest *
@@ -255,11 +236,7 @@ const CreditInterest = ({
                           <Button
                             onClick={() => handleExpanded(index)}
                             variant="outlined"
-                            sx={{
-                              fontSize: "1rem",
-                              marginTop: "1rem",
-                              pointerEvents: "auto",
-                            }}
+                            sx={styles.detailsButton}
                           >
                             Detaylar için tıklayın
                           </Button>
@@ -267,14 +244,7 @@ const CreditInterest = ({
                       )}
                     </Grid>
                   </AccordionSummary>
-                  <AccordionDetails
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
+                  <AccordionDetails sx={styles.accordionDetails}>
                     <Typography
                       sx={{
                         fontSize: "1.6rem",
@@ -322,11 +292,7 @@ const CreditInterest = ({
                       <Grid sx={{ width: "100%", textAlign: "center" }}>
                         <Button
                           variant="outlined"
-                          sx={{
-                            fontSize: "1rem",
-                            marginTop: "1rem",
-                            pointerEvents: "auto",
-                          }}
+                          sx={styles.closeDetailsButton}
                           onClick={() => handleExpanded(-1)}
                         >
                           Detayları Kapat

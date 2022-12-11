@@ -10,11 +10,12 @@ import {
   TextField,
 } from "@mui/material";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { addInterest, deleteInterest } from "../../pages/api";
 import { CreditProps, OpenCardProps, TypeProps } from "../../pages/banks";
+import styleFn from "./BankCardDetail.styles";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
 
@@ -56,13 +57,15 @@ const BankCardDetail = ({
     resolver: yupResolver(schema),
   });
 
+  const styles = styleFn();
   const { setModal, banks, setBanks } = useContext(Context);
   const bank = banks?.find((item) => item.id === bankId);
+
   return (
     <Grid container direction="row" mb={2}>
       <Grid item xs={9} container justifyContent="space-around" direction="row">
         <FormControl sx={{ width: "30%" }}>
-          <InputLabel sx={{ fontSize: "1.6rem" }} id="demo-simple-select-label">
+          <InputLabel sx={styles.fontSizeLg} id="demo-simple-select-label">
             Tür
           </InputLabel>
           <Select
@@ -72,15 +75,13 @@ const BankCardDetail = ({
             defaultValue={type.name}
             disabled={disabled}
             label="Tür"
-            sx={{ fontSize: "1.6rem" }}
+            sx={styles.fontSizeLg}
             {...register("type")}
-
-            // onChange={handleChange}
           >
             {data.map((item) => {
               return (
                 <MenuItem
-                  sx={{ fontSize: "1.4rem" }}
+                  sx={styles.fontSizeMd}
                   key={item.id}
                   value={item.name}
                   disabled={
@@ -103,7 +104,7 @@ const BankCardDetail = ({
           </Select>
         </FormControl>
         <FormControl sx={{ width: "30%" }}>
-          <InputLabel sx={{ fontSize: "1.4rem" }} id="demo-simple-select-label">
+          <InputLabel sx={styles.fontSizeMd} id="demo-simple-select-label">
             Vade
           </InputLabel>
           <Select
@@ -113,17 +114,15 @@ const BankCardDetail = ({
             label="Vade"
             defaultValue={credit.value}
             disabled={disabled}
-            sx={{ fontSize: "1.4rem" }}
+            sx={styles.fontSizeMd}
             {...register("credit")}
-
-            // onChange={handleChange}
           >
             {data.map((item) => {
               if (item.name === type.name) {
                 return item.vade.map((vade: any) => {
                   return (
                     <MenuItem
-                      sx={{ fontSize: "1.4rem" }}
+                      sx={styles.fontSizeMd}
                       key={vade.value}
                       value={vade.value}
                       disabled={
@@ -152,12 +151,12 @@ const BankCardDetail = ({
           </Select>
         </FormControl>
         <TextField
-          sx={{ width: "30%", fontSize: "1.4rem" }}
+          sx={{ width: "30%" }}
           InputLabelProps={{
-            style: { fontSize: "1.4rem" },
+            style: styles.fontSizeMd,
           }}
           InputProps={{
-            style: { fontSize: "1.4rem" },
+            style: styles.fontSizeMd,
           }}
           disabled={disabled}
           id="standard-basic"
@@ -170,9 +169,6 @@ const BankCardDetail = ({
       <Grid item xs={3} container justifyContent="end" alignItems="center">
         <Button
           onClick={handleSubmit(async (formData: any) => {
-            console.log(formData);
-            console.log(data);
-
             const newData = {
               bank_id: bankId,
               credit_type: type.id,
@@ -181,7 +177,6 @@ const BankCardDetail = ({
             };
 
             const res = await addInterest(newData);
-            console.log("res ", res);
             setBanks &&
               banks &&
               setBanks(
@@ -235,11 +230,7 @@ const BankCardDetail = ({
                 })
               );
           }}
-          sx={{
-            height: "auto",
-            marginLeft: "1rem",
-            fontSize: "1rem",
-          }}
+          sx={styles.deleteButton}
         >
           Sil
         </Button>

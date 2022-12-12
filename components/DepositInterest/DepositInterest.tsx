@@ -97,11 +97,10 @@ const DepositInterest = ({
                       key={vade.id}
                       value={vade.label}
                       disabled={
-                        item.id === type?.id &&
                         !banks?.some((bank) =>
                           bank.interests.some(
                             (interest: any) =>
-                              interest.credit_type === item.id &&
+                              interest.credit_type === 3 &&
                               interest.time_option === vade.id
                           )
                         )

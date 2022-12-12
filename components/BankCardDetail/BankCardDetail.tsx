@@ -86,7 +86,7 @@ const BankCardDetail = ({
                   value={item.name}
                   disabled={
                     bank?.interests?.filter((interest: any) => {
-                      return interest.credit_type === item.id;
+                      return interest?.credit_type === item.id;
                     }).length === item.vade.length
                   }
                   onClick={() =>
@@ -128,6 +128,7 @@ const BankCardDetail = ({
                       disabled={
                         bank?.interests?.filter((interest: any) => {
                           return (
+                            interest &&
                             interest.credit_type === type.id &&
                             interest.time_option === vade.id
                           );
@@ -184,8 +185,8 @@ const BankCardDetail = ({
                   if (bank.id === bankId) {
                     return {
                       ...bank,
-                      interests: bank.interests
-                        ? [...bank.interests, res]
+                      interests: bank?.interests
+                        ? [...bank?.interests, res]
                         : [res],
                     };
                   }
@@ -223,7 +224,7 @@ const BankCardDetail = ({
                 banks?.map((bank) => {
                   if (bank.id === bankId) {
                     bank.interests = bank.interests.filter(
-                      (interest: any) => interest.id !== interestId
+                      (interest: any) => interest?.id !== interestId
                     );
                   }
                   return bank;

@@ -12,12 +12,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { CreditProps, TypeProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
+import { showMessage } from "../../utils/showMessage";
 import styleFn from "./CreditInterest.styles";
 
 interface CreditInterestProps {
@@ -30,8 +31,10 @@ interface CreditInterestProps {
 
 const schema = object({
   credit_type: string().required("Credit type is required"),
-  time_option: string().required("Time option is required").min(3),
-  credit_amount: number().required("Credit amount is required").notOneOf([0]),
+  time_option: string().required("Time option is required"),
+  credit_amount: number()
+    .required("Credit amount is required")
+    .typeError("Credit amount must be a number"),
 });
 
 const CreditInterest = ({
@@ -46,6 +49,14 @@ const CreditInterest = ({
   });
   const { errors } = formState;
   const styles = styleFn();
+
+  useEffect(() => {
+    Object.values(errors).length > 0 &&
+      showMessage({
+        msg: Object.values(errors)[0].message || "",
+        type: "error",
+      });
+  }, [errors]);
 
   const { banks, setBanks } = useContext(Context);
   const [formData, setFormData] = React.useState({
@@ -201,11 +212,7 @@ const CreditInterest = ({
                       textAlign="center"
                     >
                       <Grid item xs={4}>
-                        <Typography
-                          sx={
-                            (styles.typography, { textTransform: "uppercase" })
-                          }
-                        >
+                        <Typography sx={styles.typography}>
                           {bank.bank_name}
                         </Typography>
                       </Grid>

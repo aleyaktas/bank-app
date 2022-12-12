@@ -46,6 +46,26 @@ div#simple-tabpanel-0 {
 div#simple-tabpanel-1 {
   width: 35%;
 }
+@media (max-width: 768px) {
+  html {
+    font-size: 50%;
+  }
+}
+@media (max-width: 600px) {
+  html {
+    font-size: 40%;
+  }
+}
+@media (max-width: 400px) {
+  html {
+    font-size: 30%;
+  }
+}
+@media (max-width: 300px) {
+  html {
+    font-size: 20%;
+  }
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

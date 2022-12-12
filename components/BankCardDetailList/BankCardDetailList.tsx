@@ -68,7 +68,8 @@ const BankCardDetailList = ({ bankId, openCard }: BankCardDetailListProps) => {
                       : ""),
 
                   value:
-                    interest && interest.time_option === 1
+                    interest &&
+                    (interest.time_option === 1
                       ? 3
                       : interest.time_option === 2
                       ? 6
@@ -82,9 +83,9 @@ const BankCardDetailList = ({ bankId, openCard }: BankCardDetailListProps) => {
                       ? 5
                       : interest.time_option === 7
                       ? 10
-                      : 0,
+                      : 0),
                 }}
-                interest={interest.interest}
+                interest={interest?.interest}
               />
             );
           });

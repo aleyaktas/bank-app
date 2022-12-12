@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { useRouter } from "next/router";
+import { showMessage } from "../../../utils/showMessage";
 
 import styleFn from "./LoginModal.styles";
 
@@ -38,11 +39,20 @@ const LoginModal = ({ modal, handleClose }: LoginModalProps) => {
   const { setUser } = useContext(Context);
   const { errors } = formState;
 
+  useEffect(() => {
+    console.log(Object.values(errors));
+    Object.values(errors).length > 0 &&
+      showMessage({
+        msg: Object.values(errors)[0].message || "",
+        type: "error",
+      });
+  }, [errors]);
+
   const router = useRouter();
   const onSubmit = async (data: FormValues) => {
     const userData = await handleLogin(data);
-    console.log(userData);
     setUser(userData);
+    showMessage({ msg: "Login successful", type: "success" });
     router.push("/banks");
     handleClose();
   };

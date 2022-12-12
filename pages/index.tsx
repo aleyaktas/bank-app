@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
-import Head from "next/head";
-import Image from "next/image";
+import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import LoginModal from "../components/modals/LoginModal/LoginModal";
@@ -10,6 +9,13 @@ export default function Home() {
   const router = useRouter();
   const { modal, setModal } = useContext(Context);
   const modalClose = () => setModal("");
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      router.push("/banks");
+    }
+  }, []);
 
   return (
     <div>

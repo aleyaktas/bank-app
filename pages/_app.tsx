@@ -8,6 +8,8 @@ import setAuthToken from "../utils/setAuthToken";
 import getConfig from "next/config";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -58,6 +60,18 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <Layout>
         <Navbar />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <Component {...pageProps} />
       </Layout>
     </Context.Provider>

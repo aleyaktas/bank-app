@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
@@ -16,9 +16,10 @@ import {
 
 import { Context } from "../../../pages/_app";
 import { addBank } from "../../../pages/api";
+import { showMessage } from "../../../utils/showMessage";
 
 const schema = object({
-  name: string().required("Name is required"),
+  name: string().required("Bank name is required"),
 });
 
 type AddBankProps = {
@@ -33,8 +34,18 @@ const AddBankModal = ({ handleClose }: AddBankProps) => {
   const { setUser, modal, setBanks, banks } = useContext(Context);
   const { errors } = formState;
 
+  useEffect(() => {
+    Object.values(errors).length > 0 &&
+      showMessage({
+        msg: Object.values(errors)[0].message || "",
+        type: "error",
+      });
+  }, [errors]);
+
   const onSubmit = async (data: FormValues) => {
+    console.log(data);
     const bankData = await addBank(data);
+    showMessage({ msg: "Bank added successfully", type: "success" });
     banks?.push(bankData);
     banks && setBanks(banks);
     reset({

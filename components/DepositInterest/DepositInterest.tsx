@@ -14,13 +14,14 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, array, InferType, TypeOf } from "yup";
 import { CreditProps, TypeProps } from "../../pages/banks";
 import { Context } from "../../pages/_app";
 import { data } from "../../utils/data";
 import styleFn from "./DepositInterest.styles";
+import { showMessage } from "../../utils/showMessage";
 
 interface DepositInterestProps {
   type?: TypeProps;
@@ -31,8 +32,10 @@ interface DepositInterestProps {
 }
 
 const schema = object({
-  time_option: string().required("Time option is required").min(3),
-  money_amount: number().required("Money amount is required"),
+  time_option: string().required("Time option is required"),
+  money_amount: number()
+    .required("Money amount is required")
+    .typeError("Money amount must be a number"),
 });
 
 const DepositInterest = ({
@@ -47,6 +50,14 @@ const DepositInterest = ({
     resolver: yupResolver(schema),
   });
   const { errors } = formState;
+
+  useEffect(() => {
+    Object.values(errors).length > 0 &&
+      showMessage({
+        msg: Object.values(errors)[0].message || "",
+        type: "error",
+      });
+  }, [errors]);
 
   const styles = styleFn();
 
@@ -158,11 +169,7 @@ const DepositInterest = ({
                       alignItems="center"
                     >
                       <Grid item xs={4}>
-                        <Typography
-                          sx={
-                            (styles.typography, { textTransform: "uppercase" })
-                          }
-                        >
+                        <Typography sx={styles.typography}>
                           {bank.bank_name}
                         </Typography>
                       </Grid>
